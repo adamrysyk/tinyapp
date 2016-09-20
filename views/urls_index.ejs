@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+  <% include ./partials/_head %>
+  <% include ./partials/_header %>
+
+    <h2>List of websites</h2>
+      <ul>
+        <% urlD.forEach(function(url) { %>
+          <li><%= url.shortURL %>: <%= url.longURL %></li>
+          <div>
+            <form method="POST" action="/urls/<%= url.shortURL %>?_method=DELETE">
+              <button type="submit">Delete URL from list</button>
+            </form>
+            <button><a href="/urls/<%= url.shortURL %> ">Edit</a></button>
+          </div>
+        <% })  %>
+      </ul>
+
+  </body>
+</html>

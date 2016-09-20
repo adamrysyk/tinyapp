@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+  <% include ./partials/_header %>
+  <% include ./partials/_head %>
+
+    <h2> <text> ShortURL: </text>
+    <a href= <%= longURL %> > <%= shortURL %></a></h2>
+
+    <form method="POST" action="/urls/<%= shortURL %>?_method=PUT">
+      <input
+        id="longURL"
+        type="text"
+        name="longURL"
+        placeholder=" <%= longURL %>" style="width: 300px">
+      <input type="submit" value="Update">
+      <h3> Make sure to include 'http://' in your url address. </h3>
+    </form>
+
+  </body>
+</html>
