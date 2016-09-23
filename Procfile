@@ -1,1 +1,1 @@
-web: node tinyapp_main.js
+web: npm start
