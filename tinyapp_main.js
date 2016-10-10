@@ -1,7 +1,9 @@
+
 'use strict';
 
 require('dotenv').config();
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const bodyParser = require("body-parser");
 const methodOverride = require('method-override');
 const app = express();
@@ -10,6 +12,7 @@ const PORT = process.env.PORT || 8080;
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded());
 app.set("view engine", "ejs");
+app.use(cookieParser())
 
 let collection = null;
 
@@ -40,18 +43,30 @@ function generateRandomString() {
   return result;
 }
 
+
+
 app.get('/', (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    username: req.cookies["username"]
+  }
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls", (req, res) => {
   collection.find().toArray((err, results) => {
-    res.render("urls_index", { urlD: results });
+    let templateVars = {
+      urlD: results,
+      username: req.cookies["username"]
+    }
+    res.render("urls_index", templateVars);
   });
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    username: req.cookies["username"]
+  }
+  res.render("urls_new", templateVars);
 });
 
 app.post("/urls", (req, res) => {
@@ -63,7 +78,12 @@ app.post("/urls", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   collection.find( {shortURL: shortURL} ).toArray((err, results) => {
-    res.render("urls_show", { shortURL: shortURL, longURL: results[0].longURL });
+    let templateVars = {
+      username: req.cookies["username"],
+      shortURL: shortURL,
+      longURL: results[0].longURL
+    }
+    res.render("urls_show", templateVars);
   });
 });
 
@@ -86,10 +106,19 @@ app.put("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username)
+  res.redirect("/")
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username")
+  res.redirect("/")
+})
+
+
 app.listen(PORT);
 console.log(`server listening on: ${PORT}`);
-
-
 
 
 
